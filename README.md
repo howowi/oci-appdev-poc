@@ -4,7 +4,7 @@
 
 Click on the button below to deploy the baseline infrastructure using OCI Resource Manager.
 
-[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/howowi/supremo-rental-quickstart/releases/download/v1.9.8/supremo_stack_v1.9.8.zip)
+[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/howowi/oci-appdev-poc/releases/download/v0.0.5/poc_setup_v.0.0.5.zip)
 
 ### 2. Deploy your application to OKE via Github Actions and OCI DevOps
 **IMPORTANT**: Must complete the baseline infrastructure setup before following the steps below.
