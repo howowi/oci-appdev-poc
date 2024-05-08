@@ -1,0 +1,178 @@
+title: "Infrastructure Setup for Application Deployment POC"
+# Sub Title shown in Application Information tab.
+description: "Setup prerequisites for Application Deployment POC"
+schemaVersion: 1.1.0
+version: "2.1"
+locale: "en"
+
+variableGroups:
+  - title: General configuration
+    variables:
+      - region
+      - tenancy_ocid
+      - compartment_ocid
+      - user_ocid
+    visible: true
+
+  - title: "Network"
+    variables:
+      - vcn_name
+      - vcn_cidr
+
+  - title: "OKE"
+    variables:
+      - kubernetes_version
+      - oke_node_shape
+      - oke_shape_ocpus
+      - oke_shape_mems
+      - oke_image_os_id
+      # - OCIR_USERNAME
+      # - OCIR_URL
+
+variables:
+  region:
+    type: oci:identity:region:name
+    required: true
+    title: "Region"
+
+  tenancy_ocid:
+    type: string
+    required: true
+    title: "Tenancy"
+
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    required: true
+    title: "Compartment"
+
+  user_ocid:
+    type: string
+    default: ${current_user_ocid}
+    required: true
+    title: "User"
+
+  ############################
+  ####       Network      ####
+  ############################
+  vcn_name:
+    type: string
+    title: "Name of the VCN to create"
+    required: true
+    default: "poc_vcn"
+
+  vcn_cidr:
+    type: string
+    title: "VCN CIDR"
+    required: true
+    default: "10.0.0.0/16"
+
+############################
+#### OKE  #####
+############################
+
+  kubernetes_version:
+    title: "Kubernetes Version"
+    required: true
+    type: enum
+    description: "Please choose the supported Kubernetes version"
+    default: "v1.29.1"
+    enum:
+      - "v1.29.1"
+      - "v1.28.2"
+      - "v1.27.10"
+      - "v1.26.7"
+
+  oke_node_shape:
+    title: "Node shape"
+    required: true
+    type: oci:core:instanceshape:name
+    description: "Please choose the supported instance shape for the node"
+    default: "VM.Standard.E4.Flex"
+    dependsOn:      
+       compartmentId: ${compartment_ocid}
+
+  oke_shape_ocpus:
+    title: "Number of OCPUs of each node"
+    required: true
+    type: string
+    default: "2"
+    description: "Please key in the number of OCPUs"
+
+  oke_shape_mems:
+    title: "Memory of each node in GB"
+    required: true
+    type: string
+    default: "16"
+    description: "Please key in the amount of memory in GB"
+
+  oke_image_os_id:
+    title: "OS Image OCID of the node pool"
+    required: true
+    type: oci:core:image:id
+    description: "Please choose the supported OS image for the node"
+    dependsOn:      
+       compartmentId: ${compartment_ocid}
+       operatingSystem: "Oracle Linux"
+       shape: ${oke_node_shape}
+
+  # OCIR_USERNAME:
+  #   title: "Username for OCI Container Registry"
+  #   required: true
+  #   type: string
+  #   description: "Example for non-federated user - tenancynamespace/john@oracle.com , Example for federated user - tenancynamespace/oracleidentitycloudservice/john@oracle.com"
+
+  # OCIR_URL:
+  #   title: "URL of OCI Container Registry"
+  #   required: true
+  #   type: string
+  #   description: "(region_code).ocir.io, eg. sin.ocir.io"
+
+############################
+####     OUTPUT
+############################
+
+outputs:
+  OCI_CLI_FINGERPRINT:
+    type: copyableString
+    title: "OCI_CLI_FINGERPRINT"
+
+  OCI_CLI_KEY_CONTENT:
+    type: link
+    title: "OCI_CLI_KEY_CONTENT"
+
+  OCI_CLI_REGION:
+    type: copyableString
+    title: "OCI_CLI_REGION"
+
+  OCI_CLI_TENANCY:
+    type: copyableString
+    title: "OCI_CLI_TENANCY"
+  
+  OCI_CLI_USER:
+    type: copyableString
+    title: "OCI_CLI_USER"
+  
+  OCI_COMPARTMENT_OCID:
+    type: copyableString
+    title: "OCI_COMPARTMENT_OCID"
+
+  OCI_AUTH_TOKEN:
+    type: copyableString
+    title: "OCI_AUTH_TOKEN"
+    sensitive: true
+
+  OCI_DEVOPS_PIPELINE_ID:
+    type: copyableString
+    title: "OCI_DEVOPS_PIPELINE_ID"
+
+outputGroups:
+  - title: OCI CLI Secret Variables for Github Actions
+    outputs:
+      - ${OCI_CLI_FINGERPRINT}
+      - ${OCI_CLI_KEY_CONTENT}
+      - ${OCI_CLI_REGION}
+      - ${OCI_CLI_TENANCY}
+      - ${OCI_CLI_USER}
+      - ${OCI_COMPARTMENT_OCID}
+      - ${OCI_AUTH_TOKEN}
+      - ${OCI_DEVOPS_PIPELINE_ID}
